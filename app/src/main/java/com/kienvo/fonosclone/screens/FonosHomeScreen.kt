@@ -35,7 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.kienvo.fonosclone.model.getMockBooks
+import com.kienvo.fonosclone.model.getBooks
+import com.kienvo.fonosclone.model.getDetectiveBooks
+import com.kienvo.fonosclone.model.getHealingBooks
+import com.kienvo.fonosclone.model.getPopularBooks
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.FonosCarousel
@@ -43,7 +46,10 @@ import com.kienvo.fonosclone.widgets.FonosCarousel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FonosHomeScreen() {
-    val books = getMockBooks()
+    val books = getBooks()
+    val booksPopular = getPopularBooks()
+    val booksHealing = getHealingBooks()
+    val booksDetective = getDetectiveBooks()
     val scrollState = rememberScrollState()
     val (currentBgUrl, setCurrentBgUrl) = remember { mutableStateOf(books.firstOrNull()?.coverUrl) }
 
@@ -90,7 +96,7 @@ fun FonosHomeScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(550.dp) // Chiều cao khu vực Header
+                    .height(650.dp) // Chiều cao khu vực Header
             ) {
                 // 1. HÌNH NỀN (Nằm dưới cùng của Header)
                 currentBgUrl?.let { url ->
@@ -144,10 +150,10 @@ fun FonosHomeScreen() {
                     // Dịch lên một chút (-50dp) để đè nhẹ lên phần mờ của Header tạo cảm giác liền mạch
                     .padding(top = 0.dp)
             ) {
-                BookSection(title = "Sách Đề Xuất", books = books)
-                BookSection(title = "Sách Mới Cập Nhật", books = books)
-                BookSection(title = "Top Thịnh Hành", books = books)
-                BookSection(title = "Sách Hài", books = books)
+                BookSection(title = "Top Thịnh Hành", books = booksPopular)
+                BookSection(title = "Sách Chữa Lành", books = booksHealing)
+                BookSection(title = "Sách Trinh Thám", books = booksDetective)
+                BookSection(title = "Học thuật", books = books)
 
                 Spacer(modifier = Modifier.height(80.dp)) // Padding đáy
             }

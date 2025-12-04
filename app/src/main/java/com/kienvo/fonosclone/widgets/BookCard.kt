@@ -34,7 +34,7 @@ fun BookCard(
         Card(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-                .height(200.dp) // Chiều cao ảnh
+                .height(240.dp) // Chiều cao ảnh
                 .fillMaxWidth()
         ) {
             AsyncImage(
