@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Fonos Clone"
+rootProject.name = "RoSach"
 include(":app")
+ 
