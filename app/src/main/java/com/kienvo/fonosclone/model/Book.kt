@@ -17,7 +17,7 @@ fun getBooks(): List<Book> {
         Book("5","Trí Tuệ Do Thái","Eran Katz","https://bizweb.dktcdn.net/thumb/1024x1024/100/197/269/products/tri-tue-do-thai.jpg?v=1510634413673"),
         Book("6","Kinh Thánh Nói Gì Về Tương Lai","Charles H. Dyer","https://bizweb.dktcdn.net/thumb/1024x1024/100/465/223/products/kinh-thanh-noi-gi-ve-tuong-lai.jpg?v=1692868032187"),
         Book("7","Đọc Vị Bất Kì Ai","David J. Lieberman","https://cdn.hstatic.net/products/200000900535/doc_vi_bat_ky_ai_de_khong_bi_loi_dung_-bia_1__tb_2025__899034494358448295b41a80dc16019e.jpg"),
-        Book("8","Muôn Kiếp Nhân Sinh","Nguyên Phong","https://firstnews.vn/upload/products/original/-1728467414.jpg"),
+        Book("8","Muôn Kiếp Nhân Sinh","Nguyên Phong","https://product.hstatic.net/200000122283/product/bia1-muonkiepnhansinh3-01_d1a246c6abfd4621bed63b8ca3b73ba9_master.jpg"),
         // ... Copy thêm vài cuốn cho đầy danh sách
     )
 }
@@ -60,3 +60,4 @@ fun getDetectiveBooks(): List<Book> {
         Book("32","Dữ liệu tử thần","Jeffery Deaver ","https://i.ex-cdn.com/mientay.giadinhonline.vn/files/content/2021/08/19/42-1241.jpg"),
         )
 }
+

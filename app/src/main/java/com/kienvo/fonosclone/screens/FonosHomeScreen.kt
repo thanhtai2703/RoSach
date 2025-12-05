@@ -153,7 +153,7 @@ fun FonosHomeScreen() {
                 BookSection(title = "Top Thịnh Hành", books = booksPopular)
                 BookSection(title = "Sách Chữa Lành", books = booksHealing)
                 BookSection(title = "Sách Trinh Thám", books = booksDetective)
-                BookSection(title = "Học thuật", books = books)
+                BookSection(title = "Sách Học thuật", books = books)
 
                 Spacer(modifier = Modifier.height(80.dp)) // Padding đáy
             }
