@@ -12,41 +12,60 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.kienvo.fonosclone.navigation.Screen
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.Yellow
 
 @Composable
-fun BottomBar(){
-    // State lưu tab đang chọn (0: Trang chủ, 1: Tìm kiếm...)
-    var selectedItem by remember { mutableIntStateOf(0) }
+fun BottomBar(navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     val items = listOf("Trang chủ", "Tìm kiếm", "Thư viện", "Cá nhân")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.Search,
-        Icons.Default.LibraryBooks, // Bạn có thể đổi icon khác
+        Icons.Default.LibraryBooks,
         Icons.Default.Person
     )
 
+    val routes = listOf(
+        Screen.Home.route,
+        Screen.Search.route,
+        Screen.Library.route,
+        Screen.Personal.route
+    )
+
     NavigationBar(
-        containerColor = DarkBg, // Nền đen tiệp màu với app
+        containerColor = DarkBg,
         contentColor = Color.White
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(icons[index], contentDescription = item) },
                 label = { Text(item) },
-                selected = selectedItem == index,
-                onClick = { selectedItem = index },
-                // Custom màu sắc theo RoPhim Style
+                selected = currentRoute == routes[index],
+                onClick = {
+                    navController.navigate(routes[index]) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
+                    }
+                },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = DarkBg, // Icon khi chọn (màu tối trên nền vàng)
-                    selectedTextColor = Yellow, // Chữ khi chọn
-                    indicatorColor = Yellow,    // Cái vệt sáng nền khi chọn
+                    selectedIconColor = DarkBg,
+                    selectedTextColor = Yellow,
+                    indicatorColor = Yellow,
                     unselectedIconColor = Color.Gray,
                     unselectedTextColor = Color.Gray
                 )
