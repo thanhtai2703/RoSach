@@ -1,20 +1,30 @@
 package com.kienvo.fonosclone.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
@@ -42,6 +53,7 @@ import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
 import androidx.navigation.NavController
+import com.kienvo.fonosclone.ui.theme.Yellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,6 +157,57 @@ fun FonosHomeScreen(navController: NavController? = null) {
                 }
             }
 
+            // === [MỚI] PHẦN NÚT BẤM & THÔNG TIN ===
+            Column(
+                modifier = Modifier.fillMaxWidth().offset(y = (-120).dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Dòng thông tin phụ (Rating / Thể loại)
+                Text(
+                    text = "Tâm lý học • 4.8 ★", // Dữ liệu giả, sau này lấy từ sách đang chọn
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.LightGray
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Hàng Nút Bấm
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Nút 1: Phát Ngay (Màu Vàng RoPhim)
+                    Button(
+                        onClick = { /* TODO */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = Yellow),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(48.dp)
+                    ) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Nghe Ngay", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    // Nút 2: Thông tin / Thêm vào DS (Màu Xám)
+                    Button(
+                        onClick = { /* TODO */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .width(160.dp)
+                            .height(48.dp)
+                    ) {
+                        Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Chi Tiết", color = Color.White, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
             // === PHẦN DANH SÁCH BÊN DƯỚI (NỀN ĐEN) ===
             // Khi cuộn, phần này sẽ trồi lên
             Column(
@@ -152,6 +215,7 @@ fun FonosHomeScreen(navController: NavController? = null) {
                     .fillMaxWidth()
                     // Dịch lên một chút (-50dp) để đè nhẹ lên phần mờ của Header tạo cảm giác liền mạch
                     .padding(top = 0.dp)
+                    .offset(y = (-80).dp)
             ) {
                 BookSection(title = "Top Thịnh Hành", books = booksPopular)
                 BookSection(title = "Sách Chữa Lành", books = booksHealing)

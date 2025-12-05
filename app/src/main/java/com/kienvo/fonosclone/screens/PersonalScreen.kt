@@ -25,6 +25,7 @@ import coil.request.ImageRequest
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.Yellow
 import androidx.navigation.NavController
+import com.kienvo.fonosclone.widgets.BottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +33,7 @@ fun PersonalScreen(navController: NavController? = null) {
     Scaffold(
         containerColor = DarkBg,
         bottomBar = {
-            navController?.let { com.kienvo.fonosclone.widgets.BottomBar(it) }
+            navController?.let { BottomBar(it) }
         },
         topBar = {
             TopAppBar(
