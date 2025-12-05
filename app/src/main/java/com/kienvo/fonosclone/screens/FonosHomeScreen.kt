@@ -41,6 +41,7 @@ import com.kienvo.fonosclone.model.getHealingBooks
 import com.kienvo.fonosclone.model.getPopularBooks
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.widgets.BookSection
+import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +58,7 @@ fun FonosHomeScreen() {
     Scaffold(
         containerColor = DarkBg, // Nền đen cho toàn bộ app
         // TopBar đặt ở đây để nó luôn nổi lên trên cùng (Fixed)
+        bottomBar = { BottomBar() },
         topBar = {
             TopAppBar(
                 title = {
@@ -155,7 +157,7 @@ fun FonosHomeScreen() {
                 BookSection(title = "Sách Trinh Thám", books = booksDetective)
                 BookSection(title = "Sách Học thuật", books = books)
 
-                Spacer(modifier = Modifier.height(80.dp)) // Padding đáy
+                Spacer(modifier = Modifier.height(100.dp)) // Padding đáy
             }
         }
     }

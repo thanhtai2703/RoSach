@@ -47,6 +47,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
 // Hoặc phiên bản mới hơn
     implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
