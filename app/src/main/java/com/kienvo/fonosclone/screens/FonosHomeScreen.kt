@@ -41,10 +41,11 @@ import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FonosHomeScreen() {
+fun FonosHomeScreen(navController: NavController? = null) {
     val books = getBooks()
     val booksPopular = getPopularBooks()
     val booksHealing = getHealingBooks()
@@ -56,7 +57,9 @@ fun FonosHomeScreen() {
     Scaffold(
         containerColor = DarkBg, // Nền đen cho toàn bộ app
         // TopBar đặt ở đây để nó luôn nổi lên trên cùng (Fixed)
-        bottomBar = { BottomBar() },
+        bottomBar = {
+            navController?.let { BottomBar(it) }
+        },
         topBar = {
             TopAppBar(
                 title = {
