@@ -1,6 +1,8 @@
 package com.kienvo.fonosclone.screens
 
+import android.R.attr.action
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,12 +13,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -27,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -35,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -64,39 +71,111 @@ fun FonosHomeScreen(navController: NavController? = null) {
     val booksDetective = getDetectiveBooks()
     val scrollState = rememberScrollState()
     val (currentBgUrl, setCurrentBgUrl) = remember { mutableStateOf(books.firstOrNull()?.coverUrl) }
+    val isLoggedIn = remember { mutableStateOf(false) }
+    val userAvatarUrl =
+        "https://icons.veryicon.com/png/o/miscellaneous/common-icons-31/default-avatar-2.png"
+
+    // [MỚI] Định nghĩa Gradient cho Top Bar: Đen mờ (0.7) -> Trong suốt
+    val topBarGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color.Black.copy(alpha = 0.7f),
+            Color.Transparent
+        )
+    )
 
     // Scaffold có nền đen tuyệt đối
     Scaffold(
-        containerColor = DarkBg, // Nền đen cho toàn bộ app
-        // TopBar đặt ở đây để nó luôn nổi lên trên cùng (Fixed)
+        containerColor = DarkBg,
         bottomBar = {
             navController?.let { BottomBar(it) }
         },
         topBar = {
             TopAppBar(
+                modifier = Modifier.background(topBarGradient),
                 title = {
-                Column(modifier = Modifier.padding(start = 20.dp)) {
-                    Text(
-                        "Fonos",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp
-                    )
-                    Text(
-                        "Audio Book Application",
-                        color = Color.LightGray,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp
-                    )
-                }
-            }, actions = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Settings, null, tint = Color.White)
-                }
-            },
+                    Column(modifier = Modifier.padding(start = 20.dp)) {
+                        Text(
+                            "Fonos",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 26.sp
+                        )
+                        Text(
+                            "Audio Book Application",
+                            color = Color.LightGray,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 15.sp
+                        )
+                    }
+                },
+                actions = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(end = 16.dp)
+                    ) {
+                        // 1. Nút Đăng nhập (Chỉ hiện khi CHƯA đăng nhập)
+                        if (!isLoggedIn.value) {
+                            Button (
+                                onClick = {
+                                    isLoggedIn.value = true
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                                shape = RoundedCornerShape(15.dp)
+                            ) {
+                                Text(
+                                    text = "Đăng nhập",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(15.dp))
+                        }
+
+                        // 2. Avatar User (Luôn hiển thị)
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.2f))
+                                .clickable {
+                                    // Click vào avatar để test đăng xuất
+                                    if (isLoggedIn.value) isLoggedIn.value = false
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (isLoggedIn.value) {
+                                // Nếu đã login -> Load ảnh
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(userAvatarUrl)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "User Avatar",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                // Nếu chưa login -> Icon mặc định
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "Default Avatar",
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(6.dp)
+                                )
+                            }
+                        }
+                    }
+                },
                 // Quan trọng: Màu trong suốt để nhìn xuyên thấu xuống hình nền bên dưới
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    titleContentColor = Color.White
+                ),
             )
+
+
         }) { paddingValues ->
 
         // Cột cuộn chính
@@ -159,18 +238,11 @@ fun FonosHomeScreen(navController: NavController? = null) {
 
             // === [MỚI] PHẦN NÚT BẤM & THÔNG TIN ===
             Column(
-                modifier = Modifier.fillMaxWidth().offset(y = (-120).dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-120).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Dòng thông tin phụ (Rating / Thể loại)
-                Text(
-                    text = "Tâm lý học • 4.8 ★", // Dữ liệu giả, sau này lấy từ sách đang chọn
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.LightGray
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 // Hàng Nút Bấm
                 Row(
                     horizontalArrangement = Arrangement.Center,
