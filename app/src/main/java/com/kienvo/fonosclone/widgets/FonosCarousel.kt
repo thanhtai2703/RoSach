@@ -1,6 +1,9 @@
 package com.kienvo.fonosclone.widgets
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -50,12 +53,14 @@ import com.kienvo.fonosclone.ui.theme.OrangeTag
 import com.kienvo.fonosclone.ui.theme.RedTag
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun FonosCarousel(
     books: List<Book>,
     onBookClick: (String) -> Unit,
-    onCurrentPosterChanged: (String) -> Unit
+    onCurrentPosterChanged: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     if (books.isEmpty()) return
 
@@ -123,15 +128,22 @@ fun FonosCarousel(
                         elevation = CardDefaults.cardElevation(10.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(book.coverUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        // [3] MỞ SCOPE RA ĐỂ DÙNG SHARED ELEMENT
+                        with(sharedTransitionScope){
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(book.coverUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                                    .sharedElement(
+                                        sharedContentState = rememberSharedContentState(key = "image-${book.id}"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
+                            )
+                        }
                     }
 
                     // Nút Play

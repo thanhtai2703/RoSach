@@ -1,5 +1,8 @@
 package com.kienvo.fonosclone.screens
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -66,9 +69,13 @@ import com.kienvo.fonosclone.widgets.FonosCarousel
 
 // --- 2. MAIN COMPOSABLE ---
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun FonosHomeScreen(navController: NavController? = null) {
+fun FonosHomeScreen(
+    navController: NavController? = null,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     // Lấy danh sách các danh mục sách (Data động)
     val homeCategories = remember { getHomeScreenData() }
 
@@ -126,7 +133,7 @@ fun FonosHomeScreen(navController: NavController? = null) {
                                 onClick = {
                                     isLoggedIn.value = true
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                                colors = ButtonDefaults.buttonColors(containerColor = Yellow),
                                 shape = RoundedCornerShape(30.dp)
                             ) {
                                 Text(
@@ -239,7 +246,9 @@ fun FonosHomeScreen(navController: NavController? = null) {
                             books = carouselBooks,
                             onBookClick = { bookId ->
                                 navController?.navigate("detail/$bookId")},
-                            onCurrentPosterChanged = { url -> setCurrentBgUrl(url) })
+                            onCurrentPosterChanged = { url -> setCurrentBgUrl(url) },
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope)
                     }
                 }
             }
@@ -304,7 +313,9 @@ fun FonosHomeScreen(navController: NavController? = null) {
                         books = category.books,
                         onBookClick = { bookId ->
                             navController?.navigate("detail/$bookId")
-                        }
+                        },
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope
                     )
                     // Khoảng cách giữa các mục
                     Spacer(modifier = Modifier.height(24.dp))
