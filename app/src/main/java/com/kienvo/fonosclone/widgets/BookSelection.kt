@@ -1,5 +1,8 @@
 package com.kienvo.fonosclone.widgets
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -12,11 +15,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kienvo.fonosclone.model.Book
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BookSection(
     title: String,
     books: List<Book>,
-    onBookClick: (String) -> Unit = {}
+    onBookClick: (String) -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
         // 1. Tiêu đề kệ (VD: Sách Mới, Sách Bán Chạy)
@@ -33,7 +39,12 @@ fun BookSection(
             contentPadding = PaddingValues(horizontal = 16.dp) // Căn lề 2 đầu
         ) {
             items(books) { book ->
-                BookCard(book = book, onBookClick = onBookClick)
+                BookCard(
+                    book = book,
+                    onBookClick = onBookClick,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             }
         }
     }

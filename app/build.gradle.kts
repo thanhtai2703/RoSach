@@ -49,6 +49,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
 
+    implementation("androidx.compose.animation:animation:1.7.0-beta01") // Hoặc bản stable mới nhất
+    implementation("androidx.navigation:navigation-compose:2.8.0-alpha08") // Cần bản navigation mới hỗ trợ Shared Element
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

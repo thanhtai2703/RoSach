@@ -1,5 +1,8 @@
 package com.kienvo.fonosclone.widgets
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,10 +22,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kienvo.fonosclone.model.Book
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BookCard(
     book: Book,
-    onBookClick: (String) -> Unit = {}
+    onBookClick: (String) -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column(
         modifier = Modifier
@@ -37,15 +43,21 @@ fun BookCard(
                 .height(240.dp) // Chiều cao ảnh
                 .fillMaxWidth()
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(book.coverUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            with(sharedTransitionScope){
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(book.coverUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                        .sharedElement(
+                            sharedContentState = rememberSharedContentState(key = "image-${book.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

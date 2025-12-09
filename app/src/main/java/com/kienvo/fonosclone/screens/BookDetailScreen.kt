@@ -1,5 +1,8 @@
 package com.kienvo.fonosclone.screens
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -51,14 +54,19 @@ import coil.request.ImageRequest
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.Yellow
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun BookDetailScreen(navController: NavController, bookId: String?) {
+fun BookDetailScreen(
+    navController: NavController,
+    bookId: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     // --- DỮ LIỆU GIẢ LẬP (MOCK DATA) ---
     // Sau này bạn sẽ dùng bookId để lấy thông tin sách thật từ List
     val mockTitle = "Muôn Kiếp Nhân Sinh"
     val mockAuthor = "Nguyên Phong"
-    val mockCover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1590656889i/53664287.jpg"
+    val mockCover = "https://product.hstatic.net/200000122283/product/bia1-muonkiepnhansinh3-01_d1a246c6abfd4621bed63b8ca3b73ba9_master.jpg"
     val mockDesc = "Một cuốn sách thức tỉnh về luật nhân quả, luân hồi và vị thế của con người trong vũ trụ. Thông qua câu chuyện kỳ lạ của Thomas - một doanh nhân tài chính ở New York, tác giả Nguyên Phong đã vén màn những bí ẩn về kiếp sống..."
 
     Scaffold(
@@ -119,17 +127,23 @@ fun BookDetailScreen(navController: NavController, bookId: String?) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // 1. ẢNH BÌA SÁCH (HERO IMAGE)
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(mockCover).crossfade(true).build(),
-                    contentDescription = "Book Cover",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        // Hiệu ứng viền nhẹ
-                        .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
-                )
+                with(sharedTransitionScope){
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).data(mockCover).crossfade(true).build(),
+                        contentDescription = "Book Cover",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(300.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .sharedElement(
+                                sharedContentState = rememberSharedContentState(key = "image-${bookId}"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            // Hiệu ứng viền nhẹ
+                            .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
