@@ -69,7 +69,6 @@ fun FonosCarousel(
     val startIndex = infiniteCount / 2
     val pagerState = rememberPagerState(initialPage = startIndex) { infiniteCount }
 
-    // Logic báo cáo ảnh nền (đã thêm lại cho bạn)
     androidx.compose.runtime.LaunchedEffect(pagerState) {
         androidx.compose.runtime.snapshotFlow { pagerState.currentPage }.collect { pageIndex ->
             val realIndex = pageIndex % realCount
@@ -96,24 +95,24 @@ fun FonosCarousel(
         val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
         val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
 
-        // [SỬA ĐỔI CHÍNH]: Dùng Box cha để căn giữa, Column con để bọc nội dung
+
         Box(
             modifier = Modifier
-                .fillMaxSize(), // Box này chiếm hết chiều cao Pager
-            contentAlignment = Alignment.Center // Căn nội dung vào giữa màn hình
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
 
-            // CỘT NỘI DUNG CHÍNH (Chỉ to vừa đủ nội dung)
+            // CỘT NỘI DUNG CHÍNH
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .width(200.dp) // Cố định chiều rộng để dễ căn chỉnh (hoặc bỏ đi nếu muốn tự do)
+                    .width(200.dp)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         this.alpha = alpha
                     }
-                    // .clickable đặt ở đây sẽ chỉ nhận sự kiện trong phạm vi Card + Tag
+
                     .clickable { onBookClick(book.id) }
             ) {
                 // 1. BOX ẢNH + NÚT PLAY
@@ -128,7 +127,6 @@ fun FonosCarousel(
                         elevation = CardDefaults.cardElevation(10.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        // [3] MỞ SCOPE RA ĐỂ DÙNG SHARED ELEMENT
                         with(sharedTransitionScope){
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)

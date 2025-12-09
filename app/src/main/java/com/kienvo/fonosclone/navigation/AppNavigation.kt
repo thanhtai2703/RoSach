@@ -20,13 +20,12 @@ fun AppNavigation(navController: NavHostController) {
     SharedTransitionLayout {
         NavHost(
             navController = navController,
-            startDestination = "home" // Đảm bảo route này khớp với bên dưới
+            startDestination = "home"
         ) {
             // --- MÀN HÌNH HOME ---
             composable("home") {
                 FonosHomeScreen(
                     navController = navController,
-                    // Truyền 2 phép thuật này xuống để Home dùng
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this
                 )
@@ -41,13 +40,11 @@ fun AppNavigation(navController: NavHostController) {
                 BookDetailScreen(
                     navController = navController,
                     bookId = bookId,
-                    // Truyền 2 phép thuật này xuống để Detail dùng
                     sharedTransitionScope = this@SharedTransitionLayout,
                     animatedVisibilityScope = this
                 )
             }
 
-            // Các màn hình phụ khác (Không cần Animation đặc biệt thì giữ nguyên)
             composable("search") { PlaceholderScreen("Tìm kiếm", navController) }
             composable("library") { PlaceholderScreen("Thư viện", navController) }
             composable("personal") { PersonalScreen(navController) }

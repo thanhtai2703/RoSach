@@ -30,7 +30,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -52,22 +51,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.kienvo.fonosclone.model.Book
 import com.kienvo.fonosclone.model.getBooks
-import com.kienvo.fonosclone.model.getDetectiveBooks
-import com.kienvo.fonosclone.model.getHealingBooks
 import com.kienvo.fonosclone.model.getHomeScreenData
-import com.kienvo.fonosclone.model.getPopularBooks
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.Yellow
 import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
 
-
-
-
-// --- 2. MAIN COMPOSABLE ---
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -89,7 +80,6 @@ fun FonosHomeScreen(
     val isLoggedIn = remember { mutableStateOf(false) }
     val userAvatarUrl = "https://icons.veryicon.com/png/o/miscellaneous/common-icons-31/default-avatar-2.png"
 
-    // Gradient cho Top Bar: Đen mờ (0.7) -> Trong suốt
     val topBarGradient = Brush.verticalGradient(
         colors = listOf(
             Color.Black.copy(alpha = 0.7f),
@@ -194,7 +184,6 @@ fun FonosHomeScreen(
         // LazyColumn tối ưu hơn cho danh sách dài và cho phép sinh mục tự động
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            // Bỏ padding mặc định của scaffold ở đáy để tự xử lý spacer
             contentPadding = PaddingValues(bottom = 0.dp)
         ) {
 
@@ -305,7 +294,6 @@ fun FonosHomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // Giữ offset để đè nhẹ lên phần mờ của Header
                         .offset(y = (-80).dp)
                 ) {
                     BookSection(
@@ -317,12 +305,10 @@ fun FonosHomeScreen(
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
-                    // Khoảng cách giữa các mục
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
 
-            // === ITEM 4: PADDING ĐÁY ===
             item {
                 Spacer(modifier = Modifier.height(100.dp))
             }

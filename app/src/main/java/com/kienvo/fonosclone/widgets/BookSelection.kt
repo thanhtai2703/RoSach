@@ -25,7 +25,7 @@ fun BookSection(
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column(modifier = Modifier.padding(vertical = 12.dp)) {
-        // 1. Tiêu đề kệ (VD: Sách Mới, Sách Bán Chạy)
+        // 1. Tiêu đề kệ
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -36,7 +36,7 @@ fun BookSection(
 
         // 2. Danh sách cuộn ngang (LazyRow)
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp) // Căn lề 2 đầu
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(books) { book ->
                 BookCard(

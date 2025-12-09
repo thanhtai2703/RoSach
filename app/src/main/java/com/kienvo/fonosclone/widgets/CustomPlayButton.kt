@@ -24,7 +24,7 @@ import com.kienvo.fonosclone.ui.theme.RedDark
 @Composable
 fun CustomPlayButton(
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp, // [ĐÃ CHỈNH] Nhỏ lại còn 40dp cho tinh tế
+    size: Dp = 40.dp,
     onClick: () -> Unit = {}
 ) {
     val gradientBrush = Brush.linearGradient(
