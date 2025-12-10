@@ -30,7 +30,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -52,22 +51,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.kienvo.fonosclone.model.Book
 import com.kienvo.fonosclone.model.getBooks
-import com.kienvo.fonosclone.model.getDetectiveBooks
-import com.kienvo.fonosclone.model.getHealingBooks
 import com.kienvo.fonosclone.model.getHomeScreenData
-import com.kienvo.fonosclone.model.getPopularBooks
 import com.kienvo.fonosclone.ui.theme.DarkBg
+import com.kienvo.fonosclone.ui.theme.PaleYellow
+import com.kienvo.fonosclone.ui.theme.PaleYellowDark
 import com.kienvo.fonosclone.ui.theme.Yellow
 import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
 
-
-
-
-// --- 2. MAIN COMPOSABLE ---
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -89,12 +82,15 @@ fun FonosHomeScreen(
     val isLoggedIn = remember { mutableStateOf(false) }
     val userAvatarUrl = "https://icons.veryicon.com/png/o/miscellaneous/common-icons-31/default-avatar-2.png"
 
-    // Gradient cho Top Bar: Đen mờ (0.7) -> Trong suốt
     val topBarGradient = Brush.verticalGradient(
         colors = listOf(
             Color.Black.copy(alpha = 0.7f),
             Color.Transparent
         )
+    )
+
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(PaleYellowDark, PaleYellow)
     )
 
     // Scaffold có nền đen tuyệt đối
@@ -133,7 +129,7 @@ fun FonosHomeScreen(
                                 onClick = {
                                     isLoggedIn.value = true
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = Yellow),
+                                colors = ButtonDefaults.buttonColors(containerColor = PaleYellowDark),
                                 shape = RoundedCornerShape(30.dp)
                             ) {
                                 Text(
@@ -194,7 +190,6 @@ fun FonosHomeScreen(
         // LazyColumn tối ưu hơn cho danh sách dài và cho phép sinh mục tự động
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            // Bỏ padding mặc định của scaffold ở đáy để tự xử lý spacer
             contentPadding = PaddingValues(bottom = 0.dp)
         ) {
 
@@ -253,7 +248,6 @@ fun FonosHomeScreen(
                 }
             }
 
-            // === ITEM 2: PHẦN NÚT BẤM & THÔNG TIN ===
             item {
                 Column(
                     modifier = Modifier
@@ -266,34 +260,72 @@ fun FonosHomeScreen(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Nút 1: Phát Ngay
+                        // Nút 1: Phát Ngay (Có Gradient)
                         Button(
                             onClick = { /* TODO */ },
-                            colors = ButtonDefaults.buttonColors(containerColor = Yellow),
+                            // [QUAN TRỌNG 1] Set nền nút trong suốt để thấy được gradient bên trong
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            // [QUAN TRỌNG 2] Bỏ padding mặc định của Button để Gradient tràn viền
+                            contentPadding = PaddingValues(0.dp),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(48.dp)
                         ) {
-                            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Nghe Ngay", color = Color.Black, fontWeight = FontWeight.Bold)
+                            // [QUAN TRỌNG 3] Tạo Box chứa Gradient và Nội dung
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(brush = buttonGradient),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Nội dung nút (Icon + Text) đặt lại padding ở đây
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PlayArrow,
+                                        contentDescription = null,
+                                        tint = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Nghe Ngay",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        // Nút 2: Chi Tiết
+                        // Nút 2: Chi Tiết (Màu Trắng, Chữ Đen)
                         Button(
                             onClick = { /* TODO */ },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White, // [SỬA] Màu nền trắng
+                                contentColor = Color.Black    // [SỬA] Màu chữ/icon đen
+                            ),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(48.dp)
                         ) {
-                            Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null,
+                                tint = Color.Black // [SỬA] Icon màu đen
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Chi Tiết", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Chi Tiết",
+                                color = Color.Black, // [SỬA] Chữ màu đen
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -305,7 +337,6 @@ fun FonosHomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // Giữ offset để đè nhẹ lên phần mờ của Header
                         .offset(y = (-80).dp)
                 ) {
                     BookSection(
@@ -317,12 +348,10 @@ fun FonosHomeScreen(
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope
                     )
-                    // Khoảng cách giữa các mục
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
 
-            // === ITEM 4: PADDING ĐÁY ===
             item {
                 Spacer(modifier = Modifier.height(100.dp))
             }

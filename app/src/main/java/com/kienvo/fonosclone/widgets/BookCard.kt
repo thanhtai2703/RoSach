@@ -32,15 +32,15 @@ fun BookCard(
 ) {
     Column(
         modifier = Modifier
-            .width(140.dp) // Chiều rộng cố định cho mỗi cuốn sách
-            .padding(end = 12.dp) // Khoảng cách giữa các cuốn
+            .width(140.dp)
+            .padding(end = 12.dp)
             .clickable { onBookClick(book.id) }
     ) {
         // 1. Ảnh bìa (Bo góc)
         Card(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-                .height(240.dp) // Chiều cao ảnh
+                .height(240.dp)
                 .fillMaxWidth()
         ) {
             with(sharedTransitionScope){
@@ -67,7 +67,7 @@ fun BookCard(
             text = book.title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            maxLines = 1, // Chỉ hiện 1 dòng, dài quá thì ...
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = Color.White
         )

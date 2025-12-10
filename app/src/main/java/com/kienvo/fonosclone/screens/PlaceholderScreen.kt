@@ -27,9 +27,9 @@ fun PlaceholderScreen(
     navController: NavController
 ) {
     Scaffold(
-        containerColor = DarkBg, // Nền tối đồng bộ
+        containerColor = DarkBg,
 
-        // 1. Tái sử dụng BottomBar (Để người dùng không bị kẹt ở màn hình này)
+        // 1. Tái sử dụng BottomBar
         bottomBar = {
             BottomBar(navController = navController)
         },
@@ -46,7 +46,7 @@ fun PlaceholderScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBg // Màu nền TopBar trùng với nền App
+                    containerColor = DarkBg
                 )
             )
         }

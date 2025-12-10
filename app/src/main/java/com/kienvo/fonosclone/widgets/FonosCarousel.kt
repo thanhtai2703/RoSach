@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -16,6 +18,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +36,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,9 +77,8 @@ fun FonosCarousel(
     val startIndex = infiniteCount / 2
     val pagerState = rememberPagerState(initialPage = startIndex) { infiniteCount }
 
-    // Logic báo cáo ảnh nền (đã thêm lại cho bạn)
-    androidx.compose.runtime.LaunchedEffect(pagerState) {
-        androidx.compose.runtime.snapshotFlow { pagerState.currentPage }.collect { pageIndex ->
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { pageIndex ->
             val realIndex = pageIndex % realCount
             onCurrentPosterChanged(books[realIndex].coverUrl)
         }
@@ -93,28 +100,41 @@ fun FonosCarousel(
         val book = books[realIndex]
         val pageOffset = (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
 
-        val scale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
+        val pagerScale = lerp(0.85f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
         val alpha = lerp(0.5f, 1f, 1f - pageOffset.absoluteValue.coerceIn(0f, 1f))
 
-        // [SỬA ĐỔI CHÍNH]: Dùng Box cha để căn giữa, Column con để bọc nội dung
+        // [MỚI] 1. Cấu hình hiệu ứng Click thu nhỏ (Bouncing)
+        val interactionSource = remember { MutableInteractionSource() }
+        val isPressed by interactionSource.collectIsPressedAsState()
+
+        val clickScale by animateFloatAsState(
+            targetValue = if (isPressed) 0.95f else 1f, // Nhấn vào thì nhỏ lại còn 95%
+            animationSpec = spring(dampingRatio = 0.4f, stiffness = 400f), // Hiệu ứng lò xo
+            label = "ClickScale"
+        )
+
         Box(
             modifier = Modifier
-                .fillMaxSize(), // Box này chiếm hết chiều cao Pager
-            contentAlignment = Alignment.Center // Căn nội dung vào giữa màn hình
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
 
-            // CỘT NỘI DUNG CHÍNH (Chỉ to vừa đủ nội dung)
+            // CỘT NỘI DUNG CHÍNH
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .width(200.dp) // Cố định chiều rộng để dễ căn chỉnh (hoặc bỏ đi nếu muốn tự do)
+                    .width(200.dp)
                     .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
+                        // [MỚI] Kết hợp Scale của Pager và Scale của Click
+                        scaleX = pagerScale * clickScale
+                        scaleY = pagerScale * clickScale
                         this.alpha = alpha
                     }
-                    // .clickable đặt ở đây sẽ chỉ nhận sự kiện trong phạm vi Card + Tag
-                    .clickable { onBookClick(book.id) }
+                    // [MỚI] Thêm interactionSource để bắt sự kiện nhấn
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null // Tắt gợn sóng để hiệu ứng nảy đẹp hơn
+                    ) { onBookClick(book.id) }
             ) {
                 // 1. BOX ẢNH + NÚT PLAY
                 Box(
@@ -128,7 +148,6 @@ fun FonosCarousel(
                         elevation = CardDefaults.cardElevation(10.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        // [3] MỞ SCOPE RA ĐỂ DÙNG SHARED ELEMENT
                         with(sharedTransitionScope){
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
@@ -139,6 +158,7 @@ fun FonosCarousel(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                                     .sharedElement(
+                                        // [SỬA LỖI] Dùng tham số 'state' thay vì 'sharedContentState'
                                         sharedContentState = rememberSharedContentState(key = "image-${book.id}"),
                                         animatedVisibilityScope = animatedVisibilityScope
                                     )
@@ -162,12 +182,21 @@ fun FonosCarousel(
                     }
                 }
 
-                // 2. TAG TÁC GIẢ
+                // 2. TAG TÁC GIẢ (CÓ DELAY)
                 androidx.compose.animation.AnimatedVisibility(
                     visible = pageOffset.absoluteValue < 0.3f,
-                    enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(300)) +
-                            expandVertically(expandFrom = Alignment.Top, animationSpec = tween(300)) +
-                            fadeIn(tween(300)),
+                    // [MỚI] Thêm delayMillis = 150 để xuất hiện chậm hơn
+                    enter = slideInVertically(
+                        initialOffsetY = { -it },
+                        animationSpec = tween(durationMillis = 400, delayMillis = 150)
+                    ) +
+                            expandVertically(
+                                expandFrom = Alignment.Top,
+                                animationSpec = tween(durationMillis = 400, delayMillis = 250)
+                            ) +
+                            fadeIn(tween(durationMillis = 400, delayMillis = 250)),
+
+                    // Exit thì giữ nguyên tốc độ nhanh
                     exit = slideOutVertically(targetOffsetY = { -it }, animationSpec = tween(300)) +
                             shrinkVertically(shrinkTowards = Alignment.Top, animationSpec = tween(300)) +
                             fadeOut(tween(300))

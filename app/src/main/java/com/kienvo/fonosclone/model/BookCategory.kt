@@ -2,7 +2,7 @@ package com.kienvo.fonosclone.model
 
 data class BookCategory(
     val id: String,
-    val title: String,      // Tên danh mục (VD: Phim Hành Động)
+    val title: String,      // Tên danh mục
     val books: List<Book>   // Danh sách các cuốn sách trong danh mục đó
 )
 
@@ -18,8 +18,6 @@ fun getHomeScreenData(): List<BookCategory> {
         BookCategory("5", "Sách Kinh Tế & Làm Giàu", allBooks.shuffled().take(6)),
         BookCategory("6", "Dành Cho Thiếu Nhi", allBooks.shuffled().take(4)),
         BookCategory("7", "Tự Truyện & Hồi Ký", allBooks.shuffled().take(5))
-        // Bạn muốn thêm bao nhiêu danh mục nữa cũng được, chỉ cần thêm dòng vào đây
-        // Code giao diện KHÔNG CẦN SỬA GÌ CẢ.
     )
 }
 
