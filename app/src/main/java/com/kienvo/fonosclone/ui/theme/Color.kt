@@ -22,3 +22,6 @@ val Orange = Color(0xFFFF8A65)      // Cam nhạt
 val RedDark = Color(0xFFD84315)     // Đỏ cam đậm
 val RedTag = Color(0xFFD32F2F)      // Đỏ Tag
 val OrangeTag = Color(0xFFFF5722)   // Cam Tag
+
+val PaleYellow = Color(0xFFFCF8BC)
+val PaleYellowDark = Color(0xFFFDEE94)

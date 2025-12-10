@@ -12,6 +12,7 @@ import com.kienvo.fonosclone.screens.BookDetailScreen
 import com.kienvo.fonosclone.screens.FonosHomeScreen
 import com.kienvo.fonosclone.screens.PersonalScreen
 import com.kienvo.fonosclone.screens.PlaceholderScreen
+import com.kienvo.fonosclone.screens.SearchScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -45,7 +46,7 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
 
-            composable("search") { PlaceholderScreen("Tìm kiếm", navController) }
+            composable("search") { SearchScreen(navController = navController) }
             composable("library") { PlaceholderScreen("Thư viện", navController) }
             composable("personal") { PersonalScreen(navController) }
         }

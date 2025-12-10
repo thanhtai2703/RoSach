@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kienvo.fonosclone.navigation.Screen
 import com.kienvo.fonosclone.ui.theme.DarkBg
+import com.kienvo.fonosclone.ui.theme.PaleYellow
 import com.kienvo.fonosclone.ui.theme.Yellow
 
 @Composable
@@ -64,8 +65,8 @@ fun BottomBar(navController: NavController) {
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = DarkBg,
-                    selectedTextColor = Yellow,
-                    indicatorColor = Yellow,
+                    selectedTextColor = PaleYellow,
+                    indicatorColor = PaleYellow,
                     unselectedIconColor = Color.Gray,
                     unselectedTextColor = Color.Gray
                 )

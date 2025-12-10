@@ -54,6 +54,8 @@ import coil.request.ImageRequest
 import com.kienvo.fonosclone.model.getBooks
 import com.kienvo.fonosclone.model.getHomeScreenData
 import com.kienvo.fonosclone.ui.theme.DarkBg
+import com.kienvo.fonosclone.ui.theme.PaleYellow
+import com.kienvo.fonosclone.ui.theme.PaleYellowDark
 import com.kienvo.fonosclone.ui.theme.Yellow
 import com.kienvo.fonosclone.widgets.BookSection
 import com.kienvo.fonosclone.widgets.BottomBar
@@ -85,6 +87,10 @@ fun FonosHomeScreen(
             Color.Black.copy(alpha = 0.7f),
             Color.Transparent
         )
+    )
+
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(PaleYellowDark, PaleYellow)
     )
 
     // Scaffold có nền đen tuyệt đối
@@ -123,7 +129,7 @@ fun FonosHomeScreen(
                                 onClick = {
                                     isLoggedIn.value = true
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = Yellow),
+                                colors = ButtonDefaults.buttonColors(containerColor = PaleYellowDark),
                                 shape = RoundedCornerShape(30.dp)
                             ) {
                                 Text(
@@ -242,7 +248,6 @@ fun FonosHomeScreen(
                 }
             }
 
-            // === ITEM 2: PHẦN NÚT BẤM & THÔNG TIN ===
             item {
                 Column(
                     modifier = Modifier
@@ -255,34 +260,72 @@ fun FonosHomeScreen(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Nút 1: Phát Ngay
+                        // Nút 1: Phát Ngay (Có Gradient)
                         Button(
                             onClick = { /* TODO */ },
-                            colors = ButtonDefaults.buttonColors(containerColor = Yellow),
+                            // [QUAN TRỌNG 1] Set nền nút trong suốt để thấy được gradient bên trong
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            // [QUAN TRỌNG 2] Bỏ padding mặc định của Button để Gradient tràn viền
+                            contentPadding = PaddingValues(0.dp),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(48.dp)
                         ) {
-                            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Nghe Ngay", color = Color.Black, fontWeight = FontWeight.Bold)
+                            // [QUAN TRỌNG 3] Tạo Box chứa Gradient và Nội dung
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(brush = buttonGradient),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Nội dung nút (Icon + Text) đặt lại padding ở đây
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PlayArrow,
+                                        contentDescription = null,
+                                        tint = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Nghe Ngay",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        // Nút 2: Chi Tiết
+                        // Nút 2: Chi Tiết (Màu Trắng, Chữ Đen)
                         Button(
                             onClick = { /* TODO */ },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White, // [SỬA] Màu nền trắng
+                                contentColor = Color.Black    // [SỬA] Màu chữ/icon đen
+                            ),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(48.dp)
                         ) {
-                            Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null,
+                                tint = Color.Black // [SỬA] Icon màu đen
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Chi Tiết", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = "Chi Tiết",
+                                color = Color.Black, // [SỬA] Chữ màu đen
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
