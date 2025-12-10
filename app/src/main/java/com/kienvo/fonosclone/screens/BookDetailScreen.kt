@@ -74,7 +74,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.Yellow
+import com.kienvo.fonosclone.widgets.ActionCircleButton
+import com.kienvo.fonosclone.widgets.AmbienceBottomSheet
 import com.kienvo.fonosclone.widgets.AmbienceSliderItem
+import com.kienvo.fonosclone.widgets.BookStatItem
+import com.kienvo.fonosclone.widgets.ChapterItem
+import com.kienvo.fonosclone.widgets.InfoRow
+import com.kienvo.fonosclone.widgets.MyDivider
+import com.kienvo.fonosclone.widgets.SectionTitle
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -234,11 +241,10 @@ fun BookDetailScreen(
                     // 1. THỐNG KÊ (Icon Row)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        BookStatItem(Icons.Default.Star, "4.8/5", "1.2k đánh giá")
-                        BookStatItem(Icons.Default.Category, "Tâm linh", "Thể loại")
                         BookStatItem(Icons.Default.AccessTime, "12h 45p", "Thời lượng")
+                        BookStatItem(Icons.Default.Category, "Tâm linh", "Thể loại")
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -331,123 +337,6 @@ fun BookDetailScreen(
                     cafeVol = cafeVolume, onCafeChange = { cafeVolume = it }
                 )
             }
-        }
-    }
-}
-
-// --- CÁC WIDGET CON (Helper Components) ---
-
-@Composable
-fun ActionCircleButton(icon: ImageVector, onClick: () -> Unit = {}) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier
-            .size(50.dp)
-            .background(Color.White.copy(alpha = 0.1f), CircleShape)
-    ) {
-        Icon(icon, contentDescription = null, tint = Color.White)
-    }
-}
-
-@Composable
-fun BookStatItem(icon: ImageVector, value: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(imageVector = icon, contentDescription = null, tint = Yellow, modifier = Modifier.size(24.dp))
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-        Text(text = label, color = Color.Gray, fontSize = 12.sp)
-    }
-}
-
-@Composable
-fun InfoRow(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = label, color = Color.Gray, fontSize = 15.sp)
-        Text(text = value, color = Color.White, fontWeight = FontWeight.Medium, fontSize = 15.sp)
-    }
-}
-
-@Composable
-fun ChapterItem(index: Int, name: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { }
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = String.format("%02d", index),
-            color = Color.Gray,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            modifier = Modifier.width(36.dp)
-        )
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = name, color = Color.White, fontSize = 15.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(text = "15 phút", color = Color.Gray, fontSize = 12.sp) // Giả lập thời gian
-        }
-        Icon(Icons.Default.PlayCircle, contentDescription = null, tint = Color.Gray)
-    }
-    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 0.5.dp)
-}
-
-@Composable
-fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        color = Color.White,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
-        modifier = Modifier.padding(bottom = 12.dp)
-    )
-}
-
-@Composable
-fun MyDivider() {
-    Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.White.copy(alpha = 0.1f)))
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AmbienceBottomSheet(
-    sheetState: androidx.compose.material3.SheetState,
-    onDismiss: () -> Unit,
-    onAiClick: () -> Unit,
-    rainVol: Float, onRainChange: (Float) -> Unit,
-    fireVol: Float, onFireChange: (Float) -> Unit,
-    cafeVol: Float, onCafeChange: (Float) -> Unit
-) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = Color(0xFF1E1E1E)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 20.dp)
-                .padding(bottom = 30.dp)
-        ) {
-            Text("Không gian đọc sách", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = Color.White)
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = onAiClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A2A2A), contentColor = Yellow),
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(Icons.Default.AutoAwesome, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("AI Gợi ý theo nội dung sách")
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            AmbienceSliderItem("Tiếng Mưa Rơi", rainVol, onRainChange)
-            Spacer(modifier = Modifier.height(16.dp))
-            AmbienceSliderItem("Bếp Lửa Trại", fireVol, onFireChange)
-            Spacer(modifier = Modifier.height(16.dp))
-            AmbienceSliderItem("Quán Cà Phê", cafeVol, onCafeChange)
         }
     }
 }
