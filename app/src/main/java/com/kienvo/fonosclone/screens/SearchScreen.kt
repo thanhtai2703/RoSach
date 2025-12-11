@@ -102,7 +102,6 @@ fun SearchScreen(navController: NavController) {
 
     Scaffold(
         containerColor = headerColor,
-        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
 
         Column(
@@ -169,7 +168,9 @@ fun SearchScreen(navController: NavController) {
 
                     item(span = { GridItemSpan(2) }) { Spacer(modifier = Modifier.height(20.dp)) }
                 }
+
             }
+
         }
     }
 }

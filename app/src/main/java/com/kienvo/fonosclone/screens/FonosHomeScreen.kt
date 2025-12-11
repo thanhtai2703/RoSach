@@ -96,9 +96,6 @@ fun FonosHomeScreen(
     // Scaffold có nền đen tuyệt đối
     Scaffold(
         containerColor = DarkBg,
-        bottomBar = {
-            navController?.let { BottomBar(it) }
-        },
         topBar = {
             TopAppBar(
                 modifier = Modifier.background(topBarGradient),
@@ -129,15 +126,23 @@ fun FonosHomeScreen(
                                 onClick = {
                                     isLoggedIn.value = true
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = PaleYellowDark),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                                contentPadding = PaddingValues(0.dp),
                                 shape = RoundedCornerShape(30.dp)
                             ) {
-                                Text(
-                                    text = "Đăng nhập",
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .background(brush = buttonGradient)
+                                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    Text(
+                                        text = "Đăng nhập",
+                                        color = Color.Black,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.width(15.dp))
                         }
@@ -186,8 +191,6 @@ fun FonosHomeScreen(
             )
         }) { paddingValues ->
 
-        // CHUYỂN ĐỔI QUAN TRỌNG: Dùng LazyColumn thay vì Column + verticalScroll
-        // LazyColumn tối ưu hơn cho danh sách dài và cho phép sinh mục tự động
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 0.dp)
@@ -263,18 +266,15 @@ fun FonosHomeScreen(
                         // Nút 1: Phát Ngay (Có Gradient)
                         Button(
                             onClick = { /* TODO */ },
-                            // [QUAN TRỌNG 1] Set nền nút trong suốt để thấy được gradient bên trong
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent
                             ),
-                            // [QUAN TRỌNG 2] Bỏ padding mặc định của Button để Gradient tràn viền
                             contentPadding = PaddingValues(0.dp),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(48.dp)
                         ) {
-                            // [QUAN TRỌNG 3] Tạo Box chứa Gradient và Nội dung
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -307,8 +307,8 @@ fun FonosHomeScreen(
                         Button(
                             onClick = { /* TODO */ },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White, // [SỬA] Màu nền trắng
-                                contentColor = Color.Black    // [SỬA] Màu chữ/icon đen
+                                containerColor = Color.White,
+                                contentColor = Color.Black
                             ),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
@@ -318,12 +318,12 @@ fun FonosHomeScreen(
                             Icon(
                                 imageVector = Icons.Default.Info,
                                 contentDescription = null,
-                                tint = Color.Black // [SỬA] Icon màu đen
+                                tint = Color.Black
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "Chi Tiết",
-                                color = Color.Black, // [SỬA] Chữ màu đen
+                                color = Color.Black,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -332,7 +332,6 @@ fun FonosHomeScreen(
             }
 
             // === ITEM 3: DANH SÁCH CÁC DANH MỤC (TỰ ĐỘNG SINH) ===
-            // Dùng hàm items() của LazyColumn để lặp qua list homeCategories
             items(homeCategories) { category ->
                 Column(
                     modifier = Modifier
