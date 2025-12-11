@@ -56,9 +56,7 @@ import com.kienvo.fonosclone.model.getHomeScreenData
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.PaleYellow
 import com.kienvo.fonosclone.ui.theme.PaleYellowDark
-import com.kienvo.fonosclone.ui.theme.Yellow
 import com.kienvo.fonosclone.widgets.BookSection
-import com.kienvo.fonosclone.widgets.BottomBar
 import com.kienvo.fonosclone.widgets.FonosCarousel
 
 

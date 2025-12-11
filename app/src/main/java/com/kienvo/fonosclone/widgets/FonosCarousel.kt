@@ -158,7 +158,6 @@ fun FonosCarousel(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                                     .sharedElement(
-                                        // [SỬA LỖI] Dùng tham số 'state' thay vì 'sharedContentState'
                                         sharedContentState = rememberSharedContentState(key = "image-${book.id}"),
                                         animatedVisibilityScope = animatedVisibilityScope
                                     )
