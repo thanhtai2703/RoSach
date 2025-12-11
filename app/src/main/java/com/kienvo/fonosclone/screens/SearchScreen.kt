@@ -153,18 +153,33 @@ fun SearchScreen(navController: NavController) {
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                TextField(
-                    value = searchQuery, onValueChange = { searchQuery = it },
-                    placeholder = { Text("Tìm tên sách, tác giả...", color = Color.Gray, fontSize = 14.sp) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
-                    shape = RoundedCornerShape(28.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White, unfocusedContainerColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Black, focusedTextColor = Color.Black, unfocusedTextColor = Color.Black
-                    ),
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(Color.White)
+                        .clickable {
+                            // [QUAN TRỌNG] Bấm vào là nhảy sang màn hình ActiveSearch
+                            navController.navigate("active_search")
+                        }
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = "Tìm tên sách, tác giả...",
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(12.dp))
 
