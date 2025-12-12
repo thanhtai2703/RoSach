@@ -22,7 +22,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kienvo.fonosclone.navigation.Screen
 import com.kienvo.fonosclone.ui.theme.DarkBg
 import com.kienvo.fonosclone.ui.theme.PaleYellow
-import com.kienvo.fonosclone.ui.theme.Yellow
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -38,10 +37,10 @@ fun BottomBar(navController: NavController) {
     )
 
     val routes = listOf(
-        Screen.Home.route,
-        Screen.Search.route,
-        Screen.Library.route,
-        Screen.Personal.route
+        "home",
+        "search",
+        "library",
+        "personal"
     )
 
     NavigationBar(
@@ -50,22 +49,32 @@ fun BottomBar(navController: NavController) {
         contentColor = Color.White
     ) {
         items.forEachIndexed { index, item ->
+            val route = routes[index]
+
+            // [LOGIC QUAN TRỌNG]: Kiểm tra để giữ icon sáng
+            val isSelected = if (route == "search") {
+                // Nếu là tab Tìm kiếm -> Nó sẽ sáng khi ở "search" HOẶC "active_search"
+                currentRoute == "search" || currentRoute == "active_search"
+            } else {
+                currentRoute == route
+            }
+
             NavigationBarItem(
                 icon = { Icon(icons[index], contentDescription = item) },
                 label = { Text(item) },
-                selected = currentRoute == routes[index],
+
+                // [SỬA] Dùng biến isSelected vừa tạo ở trên
+                selected = isSelected,
+
                 onClick = {
-                    navController.navigate(routes[index]) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+                    if (currentRoute != route) {
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(

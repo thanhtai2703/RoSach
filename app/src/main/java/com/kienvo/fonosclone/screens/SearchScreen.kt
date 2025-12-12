@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -39,8 +40,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,8 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.kienvo.fonosclone.ui.theme.DarkBg
-import com.example.rosach.R // Bỏ comment dòng này nếu bạn muốn dùng R.drawable...
+import com.example.rosach.R
 
 // [CẬP NHẬT] imageSource là Any để nhận cả String (URL) và Int (Resource ID)
 data class CategoryItemData(
@@ -80,7 +78,7 @@ data class CategoryItemData(
 @Composable
 fun SearchScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
-    val headerColor = DarkBg
+    val headerColor = Color(0xFF0F1015)
     val bodyColor = Color(0xFF13161F)
 
     // Dữ liệu mẫu (Bạn có thể thay URL bằng R.drawable.ten_anh)
@@ -136,6 +134,7 @@ fun SearchScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
+                .statusBarsPadding()
         ) {
             // HEADER
             Column(
