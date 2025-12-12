@@ -29,10 +29,6 @@ fun PlaceholderScreen(
     Scaffold(
         containerColor = DarkBg,
 
-        // 1. Tái sử dụng BottomBar
-        bottomBar = {
-            BottomBar(navController = navController)
-        },
 
         // 2. TopBar đơn giản
         topBar = {

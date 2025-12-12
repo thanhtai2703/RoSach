@@ -32,9 +32,6 @@ import com.kienvo.fonosclone.widgets.BottomBar
 fun PersonalScreen(navController: NavController? = null) {
     Scaffold(
         containerColor = DarkBg,
-        bottomBar = {
-            navController?.let { BottomBar(it) }
-        },
         topBar = {
             TopAppBar(
                 title = {
