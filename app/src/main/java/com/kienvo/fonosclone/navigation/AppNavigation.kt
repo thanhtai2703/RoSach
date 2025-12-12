@@ -1,9 +1,10 @@
 package com.kienvo.fonosclone.navigation
 
-import android.annotation.SuppressLint // [1] Nhớ Import cái này
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -33,11 +35,15 @@ private fun getTabIndex(route: String?): Int {
     return mainTabs.indexOf(route)
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter") // [2] THÊM DÒNG NÀY ĐỂ HẾT BÁO LỖI
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    val animDuration = 300
+    // Tăng thời gian lên 400-500ms và thêm Easing để lướt mượt hơn
+    val animDuration = 400
+    val slideSpec = tween<IntOffset>(durationMillis = animDuration, easing = FastOutSlowInEasing)
+    val fadeSpec = tween<Float>(durationMillis = animDuration)
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val showBottomBar = currentRoute in mainTabs
@@ -50,50 +56,84 @@ fun AppNavigation(navController: NavHostController) {
                 }
             },
             containerColor = Color.Transparent
-        ) { innerPadding -> // [3] Vẫn giữ biến innerPadding ở đây nhưng KHÔNG DÙNG bên dưới
+        ) { innerPadding ->
 
             NavHost(
                 navController = navController,
                 startDestination = "home",
-                modifier = Modifier
-                    .fillMaxSize()
-                // [4] QUAN TRỌNG: Không set padding bottom ở đây nữa.
-                // Nội dung sẽ tràn xuống tận đáy màn hình, nằm ĐÈ DƯỚI BottomBar.
-                // Nhờ vậy mà các góc bo tròn của BottomBar sẽ hiển thị đúng màu nền của trang (không bị trắng/đen).
-                ,
+                modifier = Modifier.fillMaxSize(),
 
-                // ... Phần Animation bên dưới giữ nguyên ...
+                // --- 1. ENTER TRANSITION (Màn hình mới xuất hiện) ---
                 enterTransition = {
+                    val targetRoute = targetState.destination.route
                     val fromIndex = getTabIndex(initialState.destination.route)
                     val toIndex = getTabIndex(targetState.destination.route)
-                    if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration))
-                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration))
-                    } else fadeIn(tween(animDuration))
+
+                    // [LOGIC MỚI] Nếu đích đến là ActiveSearch -> Lướt từ Phải sang (Slide Left)
+                    if (targetRoute == "active_search") {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                    }
+                    // Logic Tab cũ
+                    else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    } else {
+                        fadeIn(fadeSpec)
+                    }
                 },
+
+                // --- 2. EXIT TRANSITION (Màn hình cũ biến mất) ---
                 exitTransition = {
+                    val targetRoute = targetState.destination.route
                     val fromIndex = getTabIndex(initialState.destination.route)
                     val toIndex = getTabIndex(targetState.destination.route)
-                    if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration))
-                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration))
-                    } else fadeOut(tween(animDuration))
+
+                    // [LOGIC MỚI] Nếu đang đi tới ActiveSearch -> Màn cũ lướt sang Trái
+                    if (targetRoute == "active_search") {
+                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                    }
+                    else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    } else {
+                        fadeOut(fadeSpec)
+                    }
                 },
+
+                // --- 3. POP ENTER (Màn hình cũ quay lại khi bấm Back) ---
                 popEnterTransition = {
+                    val initialRoute = initialState.destination.route
                     val fromIndex = getTabIndex(initialState.destination.route)
                     val toIndex = getTabIndex(targetState.destination.route)
-                    if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration))
-                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration))
-                    } else fadeIn(tween(animDuration))
+
+                    // [LOGIC MỚI] Nếu quay lại từ ActiveSearch -> Màn cũ lướt từ Trái sang (Slide Right)
+                    if (initialRoute == "active_search") {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    }
+                    else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    } else {
+                        fadeIn(fadeSpec)
+                    }
                 },
+
+                // --- 4. POP EXIT (Màn hình hiện tại biến mất khi bấm Back) ---
                 popExitTransition = {
+                    val initialRoute = initialState.destination.route
                     val fromIndex = getTabIndex(initialState.destination.route)
                     val toIndex = getTabIndex(targetState.destination.route)
-                    if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration))
-                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration))
-                    } else fadeOut(tween(animDuration))
+
+                    // [LOGIC MỚI] Nếu đang thoát ActiveSearch -> Nó lướt về bên Phải (Slide Right)
+                    if (initialRoute == "active_search") {
+                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    }
+                    else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                    } else {
+                        fadeOut(fadeSpec)
+                    }
                 }
             ) {
                 composable("home") {
@@ -121,6 +161,16 @@ fun AppNavigation(navController: NavHostController) {
                         animatedVisibilityScope = this
                     )
                 }
+
+                // Đảm bảo bạn đã có PlayerScreen, nếu chưa thì comment dòng này lại
+//                composable(
+//                    route = "player/{bookId}",
+//                    arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+//                ) { backStackEntry ->
+//                    val bookId = backStackEntry.arguments?.getString("bookId")
+//                    PlayerScreen(navController, bookId)
+//                }
+
                 composable("library") { PlaceholderScreen("Thư viện", navController) }
                 composable("personal") { PersonalScreen(navController) }
             }

@@ -80,7 +80,7 @@ data class CategoryItemData(
 @Composable
 fun SearchScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
-    val headerColor = DarkBg
+    val headerColor = Color(0xFF0F1015)
     val bodyColor = Color(0xFF13161F)
 
     // Dữ liệu mẫu (Bạn có thể thay URL bằng R.drawable.ten_anh)
