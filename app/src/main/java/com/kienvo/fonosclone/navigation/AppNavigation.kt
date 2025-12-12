@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +30,7 @@ import com.kienvo.fonosclone.screens.PlaceholderScreen
 import com.kienvo.fonosclone.screens.SearchScreen
 import com.kienvo.fonosclone.widgets.BottomBar
 
-private val mainTabs = listOf("home", "search", "library", "personal")
+private val mainTabs = listOf("home", "search", "library", "personal", "active_search")
 
 private fun getTabIndex(route: String?): Int {
     return mainTabs.indexOf(route)
@@ -50,6 +51,9 @@ fun AppNavigation(navController: NavHostController) {
 
     SharedTransitionLayout {
         Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
             bottomBar = {
                 if (showBottomBar) {
                     BottomBar(navController)
