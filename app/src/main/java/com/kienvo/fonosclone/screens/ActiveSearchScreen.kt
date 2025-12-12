@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,6 +74,7 @@ fun ActiveSearchScreen(navController: NavController) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    // Dữ liệu giả lập (Giữ nguyên như cũ)
     // --- MÀU SẮC & GIAO DIỆN CỦA BẠN ---
     val headerColor = Color(0xFF0F1015)
     val contentBoxColor = Color(0xFF13161F) // Màu nền nội dung tối
@@ -137,6 +137,8 @@ fun ActiveSearchScreen(navController: NavController) {
                 ) {
                     Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
+
+                    // Ô nhập liệu
                     Box(modifier = Modifier.weight(1f)) {
                         if (query.isEmpty()) {
                             Text("Tìm tên sách, tác giả...", color = Color.Gray, fontSize = 14.sp)
@@ -152,6 +154,8 @@ fun ActiveSearchScreen(navController: NavController) {
                             modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
                         )
                     }
+
+                    // Nút Xóa (X) khi có chữ
                     if (query.isNotEmpty()) {
                         Icon(
                             Icons.Default.Close, contentDescription = "Clear", tint = Color.Gray,
@@ -159,7 +163,10 @@ fun ActiveSearchScreen(navController: NavController) {
                         )
                     }
                 }
+
                 Spacer(modifier = Modifier.width(12.dp))
+
+                // 2. NÚT HỦY (Màu trắng)
                 Text(
                     text = "Hủy", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Medium,
                     modifier = Modifier.clickable { navController.popBackStack() }

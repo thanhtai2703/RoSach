@@ -75,12 +75,21 @@ fun AppNavigation(navController: NavHostController) {
 
                     // [LOGIC MỚI] Nếu đích đến là ActiveSearch -> Lướt từ Phải sang (Slide Left)
                     if (targetRoute == "active_search") {
-                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
                     }
                     // Logic Tab cũ
                     else if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
-                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                        if (toIndex > fromIndex) slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
+                        else slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
                     } else {
                         fadeIn(fadeSpec)
                     }
@@ -94,11 +103,19 @@ fun AppNavigation(navController: NavHostController) {
 
                     // [LOGIC MỚI] Nếu đang đi tới ActiveSearch -> Màn cũ lướt sang Trái
                     if (targetRoute == "active_search") {
-                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
-                    }
-                    else if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
-                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
+                    } else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
+                        else slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
                     } else {
                         fadeOut(fadeSpec)
                     }
@@ -112,11 +129,19 @@ fun AppNavigation(navController: NavHostController) {
 
                     // [LOGIC MỚI] Nếu quay lại từ ActiveSearch -> Màn cũ lướt từ Trái sang (Slide Right)
                     if (initialRoute == "active_search") {
-                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
-                    }
-                    else if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
-                        else slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
+                    } else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
+                        else slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
                     } else {
                         fadeIn(fadeSpec)
                     }
@@ -130,11 +155,19 @@ fun AppNavigation(navController: NavHostController) {
 
                     // [LOGIC MỚI] Nếu đang thoát ActiveSearch -> Nó lướt về bên Phải (Slide Right)
                     if (initialRoute == "active_search") {
-                        slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
-                    }
-                    else if (fromIndex != -1 && toIndex != -1) {
-                        if (toIndex > fromIndex) slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, slideSpec)
-                        else slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, slideSpec)
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
+                    } else if (fromIndex != -1 && toIndex != -1) {
+                        if (toIndex > fromIndex) slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            slideSpec
+                        )
+                        else slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            slideSpec
+                        )
                     } else {
                         fadeOut(fadeSpec)
                     }
@@ -148,11 +181,9 @@ fun AppNavigation(navController: NavHostController) {
                     )
                 }
                 composable("search") { SearchScreen(navController) }
+                composable("active_search") { ActiveSearchScreen(navController) }
 
-                composable("active_search") {
-                    ActiveSearchScreen(navController = navController)
-                }
-
+                // --- MÀN HÌNH CHI TIẾT ---
                 composable(
                     route = "detail/{bookId}",
                     arguments = listOf(navArgument("bookId") { type = NavType.StringType })
@@ -165,15 +196,6 @@ fun AppNavigation(navController: NavHostController) {
                         animatedVisibilityScope = this
                     )
                 }
-
-                // Đảm bảo bạn đã có PlayerScreen, nếu chưa thì comment dòng này lại
-//                composable(
-//                    route = "player/{bookId}",
-//                    arguments = listOf(navArgument("bookId") { type = NavType.StringType })
-//                ) { backStackEntry ->
-//                    val bookId = backStackEntry.arguments?.getString("bookId")
-//                    PlayerScreen(navController, bookId)
-//                }
 
                 composable("library") { PlaceholderScreen("Thư viện", navController) }
                 composable("personal") { PersonalScreen(navController) }
