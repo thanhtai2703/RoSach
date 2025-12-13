@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.kienvo.fonosclone.screens.ActiveSearchScreen
+import com.kienvo.fonosclone.screens.AudioPlayerScreen
 import com.kienvo.fonosclone.screens.BookDetailScreen
 import com.kienvo.fonosclone.screens.FonosHomeScreen
 import com.kienvo.fonosclone.screens.PersonalScreen
@@ -199,6 +200,18 @@ fun AppNavigation(navController: NavHostController) {
 
                 composable("library") { PlaceholderScreen("Thư viện", navController) }
                 composable("personal") { PersonalScreen(navController) }
+
+                // --- MÀN HÌNH PHÁT AUDIO ---
+                composable(
+                    route = "audio_player/{bookId}",
+                    arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val bookId = backStackEntry.arguments?.getString("bookId")
+                    AudioPlayerScreen(
+                        navController = navController,
+                        bookId = bookId
+                    )
+                }
             }
         }
     }
